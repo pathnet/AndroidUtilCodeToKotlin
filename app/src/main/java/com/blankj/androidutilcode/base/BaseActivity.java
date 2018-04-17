@@ -19,6 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity
         implements IBaseView {
 
     protected View     mContentView;
+    //
     protected Activity mActivity;
 
     /**
