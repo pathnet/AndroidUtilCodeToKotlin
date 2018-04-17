@@ -96,23 +96,4 @@ object Internals {
         }
     }
 
-    /**
-     * 5.0以上版本支持
-     */
-    @JvmStatic
-    fun getOptionsBundle(activity: Activity,
-                         sharedElements: Array<View>): Bundle? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val len = sharedElements.size
-            val pairs = arrayOfNulls<android.support.v4.util.Pair<View, String>>(len)
-            for (i in 0 until len) {
-                pairs[i] = android.support.v4.util.Pair.create(sharedElements[i], sharedElements[i].transitionName)
-            }
-            return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *pairs).toBundle()
-        }
-        return null
-    }
-
-    @JvmStatic
-    fun getOptionsBundle(context: Context? = null, enterAnim: Int? = null, exitAnim: Int? = null) = enterAnim?.let { exitAnim?.let { it1 -> ActivityOptionsCompat.makeCustomAnimation(context, it, it1).toBundle() } }
 }

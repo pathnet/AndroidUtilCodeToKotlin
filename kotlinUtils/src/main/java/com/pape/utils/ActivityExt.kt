@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
 import android.content.ComponentName
+import android.os.Build
+import android.support.v4.app.ActivityOptionsCompat
+import android.view.View
 
 /**
  * Created by zzy on 2018/4/17.
@@ -126,4 +129,23 @@ inline fun Intent.noHistory(): Intent = apply { addFlags(Intent.FLAG_ACTIVITY_NO
  */
 inline fun Intent.singleTop(): Intent = apply { addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) }
 
+/**
+ * 5.0以上版本支持
+ * 实现共享元素的动画
+ */
+inline fun Activity.getOptionsBundle(sharedElements: Array<View>): Bundle? {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        val len = sharedElements.size
+        val pairs = arrayOfNulls<android.support.v4.util.Pair<View, String>>(len)
+        for (i in 0 until len) {
+            pairs[i] = android.support.v4.util.Pair.create(sharedElements[i], sharedElements[i].transitionName)
+        }
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, *pairs).toBundle()
+    }
+    return null
+}
 
+/**
+ * 实现跳转动画
+ */
+inline fun Context.getOptionsBundle(enterAnim: Int? = null, exitAnim: Int? = null) = enterAnim?.let { exitAnim?.let { it1 -> ActivityOptionsCompat.makeCustomAnimation(this, it, it1).toBundle() } }
