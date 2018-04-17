@@ -23,27 +23,29 @@ fun isActivityExists(pkg: String, cls: String): Boolean {
 
 /**
  * 启动目标Activity，并传入相应参数，参数以map形式传递
+ * @param option Additional options for how the Activity should be started.
+ * May be null if there are no options.  See {@link android.app.ActivityOptions}
  */
-inline fun <reified T : Activity> Context.startActivity(vararg params: Pair<String, Any?>) =
-        Internals.internalStartActivity(this, T::class.java, params)
+inline fun <reified T : Activity> Context.startActivity(option: Bundle? = null, vararg params: Pair<String, Any?>) =
+        Internals.internalStartActivity(this, T::class.java, params, option)
 
 /**
  * 启动目标Activity，并传入相应参数，参数以map形式传递
  */
-inline fun <reified T : Activity> Fragment.startActivity(vararg params: Pair<String, Any?>) =
-        Internals.internalStartActivity(activity, T::class.java, params)
+inline fun <reified T : Activity> Fragment.startActivity(option: Bundle? = null, vararg params: Pair<String, Any?>) =
+        Internals.internalStartActivity(activity, T::class.java, params, option)
 
 /**
  * 启动目标Activity，并传入相应参数，参数以map形式传递，有返回值
  */
-inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int, vararg params: Pair<String, Any?>) =
-        Internals.internalStartActivityForResult(this, T::class.java, requestCode, params)
+inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int = 0, option: Bundle? = null, vararg params: Pair<String, Any?>) =
+        Internals.internalStartActivityForResult(this, T::class.java, requestCode, params, option)
 
 /**
  * 启动目标Activity，并传入相应参数，参数以map形式传递，有返回值
  */
-inline fun <reified T : Activity> Fragment.startActivityForResult(requestCode: Int, vararg params: Pair<String, Any?>) =
-        startActivityForResult(Internals.createIntent(activity, T::class.java, params), requestCode)
+inline fun <reified T : Activity> Fragment.startActivityForResult(requestCode: Int = 0, option: Bundle? = null, vararg params: Pair<String, Any?>) =
+        startActivityForResult(Internals.createIntent(activity, T::class.java, params), requestCode, option)
 
 /**
  * 启动目标服务，并传入相应参数，参数以map形式传递

@@ -5,8 +5,11 @@ import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.app.ActivityOptionsCompat
+import android.view.View
 import java.io.Serializable
 
 /**
@@ -25,9 +28,10 @@ object Internals {
     fun internalStartActivity(
             ctx: Context,
             activity: Class<out Activity>,
-            params: Array<out Pair<String, Any?>>
+            params: Array<out Pair<String, Any?>>,
+            option: Bundle? = null
     ) {
-        ctx.startActivity(createIntent(ctx, activity, params))
+        ctx.startActivity(createIntent(ctx, activity, params), option)
     }
 
     @JvmStatic
@@ -35,9 +39,10 @@ object Internals {
             act: Activity,
             activity: Class<out Activity>,
             requestCode: Int,
-            params: Array<out Pair<String, Any?>>
+            params: Array<out Pair<String, Any?>>,
+            option: Bundle?? = null
     ) {
-        act.startActivityForResult(createIntent(act, activity, params), requestCode)
+        act.startActivityForResult(createIntent(act, activity, params), requestCode, option)
     }
 
     @JvmStatic
@@ -90,4 +95,24 @@ object Internals {
             return@forEach
         }
     }
+
+    /**
+     * 5.0以上版本支持
+     */
+    @JvmStatic
+    fun getOptionsBundle(activity: Activity,
+                         sharedElements: Array<View>): Bundle? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val len = sharedElements.size
+            val pairs = arrayOfNulls<android.support.v4.util.Pair<View, String>>(len)
+            for (i in 0 until len) {
+                pairs[i] = android.support.v4.util.Pair.create(sharedElements[i], sharedElements[i].transitionName)
+            }
+            return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *pairs).toBundle()
+        }
+        return null
+    }
+
+    @JvmStatic
+    fun getOptionsBundle(context: Context? = null, enterAnim: Int? = null, exitAnim: Int? = null) = enterAnim?.let { exitAnim?.let { it1 -> ActivityOptionsCompat.makeCustomAnimation(context, it, it1).toBundle() } }
 }
