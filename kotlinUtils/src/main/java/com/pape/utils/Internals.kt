@@ -25,6 +25,14 @@ object Internals {
     }
 
     @JvmStatic
+    fun createIntent(pkg: String, cls: String, params: Array<out Pair<String, Any?>>): Intent {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setComponent(ComponentName(pkg, cls))
+        if (params.isNotEmpty()) fillIntentArguments(intent, params)
+        return intent
+    }
+
+    @JvmStatic
     fun internalStartActivity(
             ctx: Context,
             activity: Class<out Activity>,
