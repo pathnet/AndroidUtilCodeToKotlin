@@ -44,6 +44,13 @@ object Utils {
         }
     }
 
+    /**
+     * 工具初始化
+     */
+    fun init(app: Application) {
+        app.registerActivityLifecycleCallbacks(mCallbacks)
+    }
+
     internal fun setTopActivity(activity: Activity) {
 //        if (activity.javaClass == PermissionUtils.PermissionActivity::class.java) return
         if (ACTIVITY_LIST.contains(activity)) {

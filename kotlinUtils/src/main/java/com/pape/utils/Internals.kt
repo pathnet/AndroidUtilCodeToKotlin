@@ -13,7 +13,7 @@ import android.view.View
 import java.io.Serializable
 
 /**
- * Created by zhangzhanyong on 2018/4/17.
+ * Created by zzy on 2018/4/17.
  */
 object Internals {
 
