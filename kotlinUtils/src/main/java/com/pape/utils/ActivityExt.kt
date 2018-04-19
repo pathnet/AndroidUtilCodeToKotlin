@@ -37,43 +37,55 @@ fun Context.startHomeActivity() {
 }
 
 /**
- * TODO
  *获取 Activity 栈链表
  */
 fun getActivityList(): List<Activity> {
-    return emptyList()
+    return Utils.getActivityList()
 }
 
 /**
- * TODO
  * 获取启动项 Activity
  */
-fun getLauncherActivity(pkg: String? = null): String {
-    return ""
+fun Context.getLauncherActivity(pkg: String? = null): String {
+    val packageName = this.packageName
+    val intent = Intent(Intent.ACTION_MAIN, null)
+    intent.addCategory(Intent.CATEGORY_LAUNCHER)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val packageManager = this.packageManager
+    val listActivity = packageManager.queryIntentActivities(intent, 0).filter { it.activityInfo.packageName == packageName }
+    return if (listActivity.isNotEmpty()) listActivity.first().activityInfo.name else "no${packageName}"
 }
 
 /**
- * TODO
  * 获取栈顶 Activity
  */
 fun getTopActivity(): Activity? {
-
-    return null
+    return Utils.getTopActivity()
 }
 
 /**
- * TODO
  * 判断 Activity 是否存在栈中
  */
-fun isActivityExistsInStack(activity: Activity): Boolean {
+fun Activity.isActivityExistsInStack(): Boolean {
+    val activities = getActivityList()
+    for (aActivity in activities) {
+        if (aActivity == this) {
+            return true
+        }
+    }
     return false
 }
 
 /**
- * TODO
  * 判断 Activity 是否存在栈中
  */
 fun <T> isActivityExistsInStack(cls: Class<T>): Boolean {
+    val activities = getActivityList()
+    for (aActivity in activities) {
+        if (aActivity.javaClass == cls) {
+            return true
+        }
+    }
     return false
 }
 
